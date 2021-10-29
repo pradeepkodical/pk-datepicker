@@ -48,10 +48,14 @@ npm -i kpr-charts
       data: {},
     },
   ]}
-  onClick={(item: IHaveDate) => {}}
-  onHover={(item: IHaveDate, x: number, y: number) => {}}
+  onClick={(item: YearCalendarData) => {}}
+  onHover={(item: YearCalendarData, x: number, y: number) => {}}
 />
 ```
+
+## Demo
+
+[Demo](https://codesandbox.io/s/rough-bush-bp1jg)
 
 ## Contributing
 

@@ -15,18 +15,22 @@ const data = [
   {
     date: new Date(),
     bgColor: 'red',
+    data: {},
   },
   {
     date: new Date(2019, 1, 1),
     bgColor: 'pink',
+    data: {},
   },
   {
     date: new Date(2019, 1, 1),
     bgColor: 'orange',
+    data: {},
   },
   {
     date: new Date(),
     bgColor: 'purple',
+    data: {},
   },
 ];
 

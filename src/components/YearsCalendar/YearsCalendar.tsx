@@ -32,10 +32,10 @@ const defaultConfig: ColorConfig = {
   borderColor: '#efefef',
 };
 
-interface IHaveDate {
+export type YearCalendarData = {
   date: Date;
-  bgColor: string;
-}
+  bgColor: Property.Color;
+};
 
 function getLocation(date: Date) {
   const top = date.getDay() * CELL_SIZE;
@@ -88,7 +88,7 @@ function getMonthsHeader(year: number, config: ColorConfig) {
 
 function YearBox(props: {
   year: number;
-  items: Array<IHaveDate>;
+  items: Array<YearCalendarData>;
   config: ColorConfig;
   onClick?: (item: any) => void;
   onHover?: (item: any, x: number, y: number) => void;
@@ -191,17 +191,17 @@ function YearBox(props: {
 }
 
 export type YearsCalendarProps = {
-  items: Array<IHaveDate>;
+  items: Array<YearCalendarData>;
   config?: ColorConfig;
-  onClick?: (data: IHaveDate) => void;
-  onHover?: (data: IHaveDate, x: number, y: number) => void;
+  onClick?: (data: YearCalendarData) => void;
+  onHover?: (data: YearCalendarData, x: number, y: number) => void;
 };
 
 export function YearsCalendar(props: YearsCalendarProps) {
   const { items, config, onClick, onHover } = props;
 
   const groupedItems = useMemo(
-    () => groupBy(items, (item: IHaveDate) => item.date.getFullYear()),
+    () => groupBy(items, (item: YearCalendarData) => item.date.getFullYear()),
     [items]
   );
 

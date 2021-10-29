@@ -8,15 +8,15 @@ declare type ColorConfig = {
     selTextColor?: Property.Color;
     borderColor?: Property.Color;
 };
-interface IHaveDate {
+export declare type YearCalendarData = {
     date: Date;
-    bgColor: string;
-}
+    bgColor: Property.Color;
+};
 export declare type YearsCalendarProps = {
-    items: Array<IHaveDate>;
+    items: Array<YearCalendarData>;
     config?: ColorConfig;
-    onClick?: (data: IHaveDate) => void;
-    onHover?: (data: IHaveDate, x: number, y: number) => void;
+    onClick?: (data: YearCalendarData) => void;
+    onHover?: (data: YearCalendarData, x: number, y: number) => void;
 };
 export declare function YearsCalendar(props: YearsCalendarProps): JSX.Element;
 export {};
