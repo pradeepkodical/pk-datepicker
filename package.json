@@ -1,15 +1,18 @@
 {
   "name": "kpr-charts",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "private": false,
-  "dependencies": {},
+  "dependencies": {
+    "date-fns": "^2.22.1"
+  },
   "main": "lib/index.js",
   "module": "lib/index.esm.js",
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "rollup -c",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "build-storybook-docs": "build-storybook --docs"
   },
   "eslintConfig": {
     "extends": [

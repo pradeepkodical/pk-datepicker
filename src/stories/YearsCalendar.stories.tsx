@@ -3,7 +3,7 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { YearsCalendar } from '../components/YearsCalendar/YearsCalendar';
 
 export default {
-  title: 'Example/YearsCalendar',
+  title: 'Components/YearsCalendar',
   component: YearsCalendar,
 } as ComponentMeta<typeof YearsCalendar>;
 
