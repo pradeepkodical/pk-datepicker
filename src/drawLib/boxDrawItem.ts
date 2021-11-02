@@ -1,14 +1,20 @@
-import { DrawItem } from "./drawItem";
+import { DrawItem, StringOrFunc } from "./drawItem";
 
 export class BoxDrawItem extends DrawItem {
-    bgColor: string = '#fff';
+    bgColor: StringOrFunc = '#fff';
     color: string = '#111';
     borderColor: string = '#fff';
-    selBgColor: string = '#dcf5ff';
+    selBgColor: StringOrFunc = '#dcf5ff';
     text?: string;
+    sideKick?: DrawItem;
     draw(ctx: any) {
-        ctx.fillStyle = this.selected || this.hovering ? this.selBgColor : this.bgColor;
+        const bg = this.getColor(ctx, this.bgColor);
+        const selBg = this.getColor(ctx, this.selBgColor);
+        ctx.fillStyle = this.selected || this.hovering ? selBg : bg;
         ctx.fillRect(this.left, this.top, this.getWidth(), this.getHeight());
+
+        //console.log(`box ${this.text} ${this.hovering} ${ctx.fillStyle} ${this.left} ${this.top} ${this.getWidth()} ${this.getHeight()}`);
+
         if (this.borderColor !== this.bgColor) {
             ctx.strokeWidth = 0.5;
             ctx.strokeStyle = this.borderColor;
@@ -26,15 +32,16 @@ export class BoxDrawItem extends DrawItem {
                 this.getWidth()
             );
         }
+        if (this.sideKick) this.sideKick.draw(ctx);
     }
 
     static create(
-        top: number,
         left: number,
+        top: number,
         size: number,
         color: string,
-        bgColor: string,
-        selBgColor: string,
+        bgColor: StringOrFunc,
+        selBgColor: StringOrFunc,
         borderColor: string,
         data: any,
         text?: string

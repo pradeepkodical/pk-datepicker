@@ -1,24 +1,25 @@
 import { useCallback, useMemo, useRef } from 'react';
 import useCanvas from '../hooks/useCanvas';
+import { ContainerDrawItem } from './containerDrawItem';
 import { DrawItem } from './drawItem';
 import { TextDrawItem } from './textDrawItem';
 
 export type CanvasContainerProps = {
   drawItems: Array<DrawItem>;
   onClick?: (item: any) => void;
-  onHover?: (item: any, x: number, y: number) => void;
+  onHover?: (item: any) => void;
   children?: any;
   minHeight?: number;
 };
 
 export default function CanvasContainer(props: CanvasContainerProps) {
-  const { drawItems, onClick, onHover, children, minHeight } = props;
+  const { drawItems, onClick, onHover, minHeight } = props;
 
   const height = useMemo(
     () =>
       Math.min(
         20000,
-        drawItems.reduce((p: number, c: DrawItem) => p + c.getHeight(), 0)
+        drawItems.reduce((p: number, c: DrawItem) => p + c.getHeight(), 50)
       ),
     [drawItems]
   );
@@ -62,27 +63,39 @@ export default function CanvasContainer(props: CanvasContainerProps) {
         null
       );
 
-      if (hitItem instanceof TextDrawItem) return;
-
-      if (lastHit.current !== hitItem) {
+      const resetLastItem = () => {
         if (lastHit.current) {
           const di = lastHit.current as DrawItem;
           if (di) {
             di.hovering = false;
             di.parent?.draw(ctx);
             di.draw(ctx);
+            if (onHover) onHover(null);
           }
         }
-        lastHit.current = hitItem;
+      };
+
+      if (
+        hitItem instanceof TextDrawItem ||
+        hitItem instanceof ContainerDrawItem
+      ) {
+        return;
+      }
+
+      if (lastHit.current !== hitItem) {
+        resetLastItem();
         if (hitItem) {
-          if (onHover && hitItem.data) onHover(hitItem.data, x, y);
+          if (onHover) onHover(hitItem.data);
         }
       }
+
       if (hitItem) {
         hitItem.hovering = true;
-        hitItem.draw(ctx);
         hitItem.parent?.draw(ctx);
+        hitItem.draw(ctx);
       }
+
+      lastHit.current = hitItem;
     },
     [drawItems, lastHit, onHover]
   );
@@ -95,11 +108,11 @@ export default function CanvasContainer(props: CanvasContainerProps) {
         padding: '8px',
         position: 'relative',
         overflow: 'auto',
+        width: '100%',
         minHeight,
       }}
     >
-      <canvas width={width} height={height} ref={canvasRef} />
-      {children}
+      <canvas width={width + 50} height={height} ref={canvasRef} />
     </div>
   );
 }

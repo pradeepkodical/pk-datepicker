@@ -14,8 +14,10 @@ export class TextDrawItem extends DrawItem {
         ctx.fillStyle = this.bgColor;
         ctx.fillRect(this.left, this.top, size.width, this.height);
         ctx.fillStyle = this.color;
+
         //ctx.strokeStyle = this.color;
         //ctx.strokeRect(this.left, this.top, size.width, this.height);
+
         ctx.fillText(this.text, this.left, this.top + this.height / 2);
     }
 

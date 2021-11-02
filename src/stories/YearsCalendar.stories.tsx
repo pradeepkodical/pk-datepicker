@@ -1,6 +1,9 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-import { YearsCalendar } from '../components/YearsCalendar/YearsCalendar';
+import {
+  YearCalendarData,
+  YearsCalendar,
+} from '../components/YearsCalendar/YearsCalendar';
 
 export default {
   title: 'Components/YearsCalendar',
@@ -34,6 +37,24 @@ const data = [
   },
 ];
 
+function Tooltip(props: { item?: YearCalendarData }) {
+  const { item } = props;
+  return (
+    <div
+      style={{
+        backgroundColor: '#dcf5ff',
+        color: '#333',
+        padding: '10px',
+        border: '1px solid #eee',
+        borderRadius: '10px',
+        //boxShadow: '1px 1px 5px 5px #eee',
+      }}
+    >
+      My tool tip:{`${item?.date}`}
+    </div>
+  );
+}
+
 export const LightMode = Template.bind({});
 LightMode.args = {
   config: {
@@ -42,9 +63,10 @@ LightMode.args = {
     defaultBgColor: '#fff',
     textColor: '#000',
     selTextColor: 'pink',
-    borderColor: '#999',
+    borderColor: '#eee',
   },
   items: data,
+  tooltip: Tooltip,
 };
 
 export const DarkMode = Template.bind({});
@@ -55,7 +77,8 @@ DarkMode.args = {
     defaultBgColor: '#111',
     textColor: '#fff',
     selTextColor: 'red',
-    borderColor: '#666',
+    borderColor: '#222',
   },
   items: data,
+  tooltip: Tooltip,
 };

@@ -1,10 +1,11 @@
-import { DrawItem } from "./drawItem";
+import { DrawItem, StringOrFunc } from "./drawItem";
 export declare class BoxDrawItem extends DrawItem {
-    bgColor: string;
+    bgColor: StringOrFunc;
     color: string;
     borderColor: string;
-    selBgColor: string;
+    selBgColor: StringOrFunc;
     text?: string;
+    sideKick?: DrawItem;
     draw(ctx: any): void;
-    static create(top: number, left: number, size: number, color: string, bgColor: string, selBgColor: string, borderColor: string, data: any, text?: string): BoxDrawItem;
+    static create(left: number, top: number, size: number, color: string, bgColor: StringOrFunc, selBgColor: StringOrFunc, borderColor: string, data: any, text?: string): BoxDrawItem;
 }

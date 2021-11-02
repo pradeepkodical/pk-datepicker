@@ -1,4 +1,10 @@
-import { useMemo } from 'react';
+import {
+  useCallback,
+  useMemo,
+  useEffect,
+  useState,
+  createElement,
+} from 'react';
 
 import { format, addDays, getWeek, getDaysInYear } from 'date-fns';
 
@@ -11,6 +17,11 @@ import { BoxDrawItem } from '../../drawLib/boxDrawItem';
 import { GridDrawItem } from '../../drawLib/gridDrawItem';
 
 import { Property } from 'csstype';
+
+import useMousePosition from '../../hooks/useMousePosition';
+import useDelayResetState from '../../hooks/useDelayResetState';
+import { ChartTooltip } from '../ChartTooltip/ChartTooltip';
+import React from 'react';
 
 const CELL_SIZE = 25;
 
@@ -91,7 +102,7 @@ function YearBox(props: {
   items: Array<YearCalendarData>;
   config: ColorConfig;
   onClick?: (item: any) => void;
-  onHover?: (item: any, x: number, y: number) => void;
+  onHover?: (item: any) => void;
 }) {
   const { year, items, onClick, onHover, config } = props;
 
@@ -134,8 +145,8 @@ function YearBox(props: {
         arr.push(item);
       } else {
         const item = BoxDrawItem.create(
-          loc.top + CELL_SIZE,
           loc.left + CELL_SIZE,
+          loc.top + CELL_SIZE,
           CELL_SIZE - 2,
           config.textColor || '#111',
           bgColor || '#fff',
@@ -180,12 +191,8 @@ function YearBox(props: {
       <CanvasContainer
         drawItems={drawItems}
         onClick={onClick}
-        onHover={(item: any, x: number, y: number) => {
-          if (item) {
-            if (onHover) onHover(item, x, y);
-          }
-        }}
-      ></CanvasContainer>
+        onHover={onHover}
+      />
     </div>
   );
 }
@@ -193,13 +200,15 @@ function YearBox(props: {
 export type YearsCalendarProps = {
   items: Array<YearCalendarData>;
   config?: ColorConfig;
-  onClick?: (data: YearCalendarData) => void;
-  onHover?: (data: YearCalendarData, x: number, y: number) => void;
+  onClick?: (data: YearCalendarData | null) => void;
+  onHover?: (data: YearCalendarData | null) => void;
+  tooltip?: React.FC<{ item?: YearCalendarData }>;
 };
 
 export function YearsCalendar(props: YearsCalendarProps) {
-  const { items, config, onClick, onHover } = props;
+  const { items, config, onClick, onHover, tooltip } = props;
 
+  const [selected, setSelected] = useState<YearCalendarData | null>(null);
   const groupedItems = useMemo(
     () => groupBy(items, (item: YearCalendarData) => item.date.getFullYear()),
     [items]
@@ -207,8 +216,22 @@ export function YearsCalendar(props: YearsCalendarProps) {
 
   const theConfig = { ...defaultConfig, ...config };
 
+  const handleHover = useCallback(
+    (item: any) => {
+      setSelected(item);
+      if (onHover) onHover(item);
+    },
+    [setSelected, onHover]
+  );
+
   return (
-    <div>
+    <div
+      style={{
+        padding: '10px',
+        backgroundColor: theConfig.defaultBgColor,
+        color: theConfig.textColor,
+      }}
+    >
       {Object.keys(groupedItems).map((key: any, i: number) => (
         <div key={i}>
           <YearBox
@@ -216,10 +239,11 @@ export function YearsCalendar(props: YearsCalendarProps) {
             items={groupedItems[key]}
             config={theConfig}
             onClick={onClick}
-            onHover={onHover}
+            onHover={handleHover}
           />
         </div>
       ))}
+      <ChartTooltip tooltip={tooltip} selected={selected} />
     </div>
   );
 }

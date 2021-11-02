@@ -1,5 +1,5 @@
-/// <reference types="react" />
 import { Property } from 'csstype';
+import React from 'react';
 declare type ColorConfig = {
     selBgColor?: Property.Color;
     defaultBgColor?: Property.Color;
@@ -15,8 +15,11 @@ export declare type YearCalendarData = {
 export declare type YearsCalendarProps = {
     items: Array<YearCalendarData>;
     config?: ColorConfig;
-    onClick?: (data: YearCalendarData) => void;
-    onHover?: (data: YearCalendarData, x: number, y: number) => void;
+    onClick?: (data: YearCalendarData | null) => void;
+    onHover?: (data: YearCalendarData | null) => void;
+    tooltip?: React.FC<{
+        item?: YearCalendarData;
+    }>;
 };
 export declare function YearsCalendar(props: YearsCalendarProps): JSX.Element;
 export {};

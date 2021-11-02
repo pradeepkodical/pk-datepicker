@@ -61,8 +61,8 @@ export class GridDrawItem extends ContainerDrawItem {
 
         arr1.forEach((a: any, idx: number) => {
             const item1 = BoxDrawItem.create(
-                top + Math.floor(idx / c) * size1,
                 left + (idx % c) * size1,
+                top + Math.floor(idx / c) * size1,
                 size1,
                 color,
                 a.bgColor,
