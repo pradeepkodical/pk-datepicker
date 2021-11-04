@@ -8,6 +8,7 @@ export class BoxDrawItem extends DrawItem {
     text?: string;
     textAlign?: string = 'center';
     sideKick?: DrawItem;
+    font?: string = '9px Verdana';
     draw(ctx: any) {
 
         ctx.fillStyle = this.getSelectedBg(ctx, this.bgColor, this.selBgColor);
@@ -21,7 +22,7 @@ export class BoxDrawItem extends DrawItem {
             ctx.strokeRect(this.left, this.top, this.getWidth(), this.getHeight());
         }
         if (this.text) {
-            ctx.font = "9px Verdana";
+            ctx.font = this.font;
             ctx.textBaseline = 'middle';
             let x = this.left + 5;
             let y = this.top + this.getHeight() / 2;
@@ -45,6 +46,11 @@ export class BoxDrawItem extends DrawItem {
 
     setTextAlign(textAlign: "left" | "right" | "center") {
         this.textAlign = textAlign;
+        return this;
+    }
+
+    setFont(font: string) {
+        this.font = font;
         return this;
     }
 

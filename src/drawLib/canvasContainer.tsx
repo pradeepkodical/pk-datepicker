@@ -70,8 +70,8 @@ export default function CanvasContainer(props: CanvasContainerProps) {
             di.hovering = false;
             di.parent?.draw(ctx);
             di.draw(ctx);
-            //if (onHover) onHover(null);
           }
+          lastHit.current = null;
         }
       };
 
@@ -79,6 +79,10 @@ export default function CanvasContainer(props: CanvasContainerProps) {
         hitItem instanceof TextDrawItem ||
         hitItem instanceof ContainerDrawItem
       ) {
+        if (lastHit.current) {
+          resetLastItem();
+          if (onHover) onHover(null);
+        }
         return;
       }
 
@@ -94,7 +98,6 @@ export default function CanvasContainer(props: CanvasContainerProps) {
         hitItem.parent?.draw(ctx);
         hitItem.draw(ctx);
       }
-
       lastHit.current = hitItem;
     },
     [drawItems, lastHit, onHover]

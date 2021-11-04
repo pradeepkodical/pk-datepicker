@@ -18,6 +18,7 @@ export interface IBasicGantChartConfig extends IColorsConfig {
   colSize?: number;
   rowSize?: number;
   itemSize?: number;
+  fontSize?: number;
   itemColor?: StringColorOrFunc;
 }
 
@@ -25,6 +26,7 @@ const defaultConfig = {
   colSize: 60,
   rowSize: 40,
   itemSize: 25,
+  fontSize: 12,
   itemColor: 'blue',
 };
 
@@ -32,6 +34,7 @@ interface BasicGantChartConfig extends ColorsConfig {
   colSize: number;
   rowSize: number;
   itemSize: number;
+  fontSize: number;
   itemColor: DefaultColorOrFunc;
 }
 
@@ -62,7 +65,7 @@ function createItem(
       top,
       nameWidth,
       theConfig.textColor,
-      bgColor,
+      item.bgColor,
       theConfig.selBgColor,
       theConfig.borderColor,
       item,
@@ -70,6 +73,7 @@ function createItem(
     )
       .setHeight(theConfig.rowSize)
       .setTextAlign('left')
+      .setFont(`${theConfig.fontSize}px Verdana`)
   );
 
   const left = theConfig.colSize * (s / t);
@@ -98,6 +102,8 @@ export type BasicGantChartData = {
   name: string;
   startDate: Date;
   endDate: Date;
+  data?: any;
+  bgColor: StringColorOrFunc;
 };
 
 export type BasicGantChartProps = {
@@ -129,7 +135,8 @@ function createDrawItems(
   );
 
   const nameWidth = items.reduce(
-    (p: number, c: BasicGantChartData) => Math.max(p, c.name.length * 6),
+    (p: number, c: BasicGantChartData) =>
+      Math.max(p, c.name.length * theConfig.fontSize),
     0
   );
   items.forEach((item: any, i: number) => {

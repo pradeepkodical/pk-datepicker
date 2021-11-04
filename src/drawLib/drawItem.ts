@@ -50,7 +50,7 @@ export abstract class DrawItem implements IDrawItem {
                 this.top + this.getHeight()
             );
             colors.forEach((c: string, i: number) => {
-                grd.addColorStop(i / colors.length, c);
+                grd.addColorStop(i / (colors.length - 1), c);
             });
             return grd;
         }

@@ -17,6 +17,35 @@ npm i ka-charts
 ## Usage
 
 ```tsx
+<BasicGantChart
+  config={{
+    alternateBgColor: '#eee',
+    borderColor: '#999',
+    defaultBgColor: '#fff',
+    selBgColor: '#dcf5ff',
+    selTextColor: 'pink',
+    textColor: '#000',
+  }}
+  items={[
+    {
+      bgColor: 'red',
+      startDate: new Date('2021-10-29T00:49:49.911Z'),
+      endDate: new Date('2021-10-29T00:49:49.911Z'),
+      data: {},
+    },
+    {
+      bgColor: 'pink',
+      startDate: new Date('2021-10-29T00:49:49.911Z'),
+      endDate: new Date('2021-10-29T00:49:49.911Z'),
+      data: {},
+    },
+  ]}
+  onClick={(item) => {}}
+  onHover={(item, x: number, y: number) => {}}
+/>
+```
+
+```tsx
 <YearsCalendar
   config={{
     alternateBgColor: '#eee',

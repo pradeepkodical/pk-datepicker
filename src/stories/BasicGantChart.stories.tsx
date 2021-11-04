@@ -28,6 +28,7 @@ const generateData = (name: string, i: number) => {
     name,
     startDate: st,
     endDate: ed,
+    bgColor: () => ['orange', 'white', 'green'],
   };
 };
 const data: Array<BasicGantChartData> = [
