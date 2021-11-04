@@ -1,19 +1,19 @@
-import { DrawItem } from "./drawItem";
+import { DrawItem, StringOrFunc } from "./drawItem";
 
 export class TextDrawItem extends DrawItem {
 
     text: string = '';
-    color: string = '#111';
-    bgColor: string = '#fff';
+    color: StringOrFunc = '#111';
+    bgColor: StringOrFunc = '#fff';
     draw(ctx: any) {
 
         ctx.font = '12px Verdana';
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
         const size = ctx.measureText(this.text);
-        ctx.fillStyle = this.bgColor;
+        ctx.fillStyle = this.getColor(ctx, this.bgColor);
         ctx.fillRect(this.left, this.top, size.width, this.height);
-        ctx.fillStyle = this.color;
+        ctx.fillStyle = this.getColor(ctx, this.color);
 
         //ctx.strokeStyle = this.color;
         //ctx.strokeRect(this.left, this.top, size.width, this.height);
@@ -25,8 +25,8 @@ export class TextDrawItem extends DrawItem {
         left: number,
         top: number,
         height: number,
-        color: string,
-        bgColor: string,
+        color: StringOrFunc,
+        bgColor: StringOrFunc,
         text: string,
         data: any
     ) {

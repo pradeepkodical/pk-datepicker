@@ -1,9 +1,11 @@
+import { DefaultColorOrFunc } from '../components/ColorsConfig';
+
 export interface IDrawItem {
     draw(ctx: any): void;
     moveBy(x1: number, y1: number): IDrawItem;
 }
 
-export type StringOrFunc = string | (() => Array<string>);
+export type StringOrFunc = DefaultColorOrFunc;
 
 export abstract class DrawItem implements IDrawItem {
     top: number = 0;
@@ -35,7 +37,10 @@ export abstract class DrawItem implements IDrawItem {
         return this;
     }
 
-    getColor(ctx: any, color: string | (() => Array<string>)) {
+    getSelectedBg(ctx: any, defaultColor: StringOrFunc, selColor: StringOrFunc) {
+        return this.selected || this.hovering ? this.getColor(ctx, selColor) : this.getColor(ctx, defaultColor);
+    }
+    getColor(ctx: any, color: StringOrFunc) {
         if (typeof color === "function") {
             const colors = color();
             const grd = ctx.createLinearGradient(
@@ -44,8 +49,9 @@ export abstract class DrawItem implements IDrawItem {
                 this.left + this.getWidth(),
                 this.top + this.getHeight()
             );
-            grd.addColorStop(0, colors[0]);
-            grd.addColorStop(1, colors[1]);
+            colors.forEach((c: string, i: number) => {
+                grd.addColorStop(i / colors.length, c);
+            });
             return grd;
         }
         return color;

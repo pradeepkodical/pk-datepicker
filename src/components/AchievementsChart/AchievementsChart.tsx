@@ -9,29 +9,28 @@ import { Property } from 'csstype';
 import React from 'react';
 import { ChartTooltip } from '../ChartTooltip/ChartTooltip';
 import { TextDrawItem } from '../../drawLib/textDrawItem';
+import {
+  IColorsConfig,
+  ColorsConfig,
+  getConfig,
+  DefaultColorOrFunc,
+} from '../ColorsConfig';
+import { CanvasChart } from '../CanvasChart/CanvasChart';
 
-type AchievementsChartConfig = {
-  selBgColor?: Property.Color;
-  defaultBgColor?: Property.Color;
-  alternateBgColor?: Property.Color;
-  textColor?: Property.Color;
-  selTextColor?: Property.Color;
-  borderColor?: Property.Color;
-
+interface IAchievementsChartConfig extends IColorsConfig {
   rowSize?: number;
   boxSize?: number;
-};
+}
 
-const defaultConfig: AchievementsChartConfig = {
-  selBgColor: '#dcf5ff',
-  defaultBgColor: '#fff',
-  alternateBgColor: '#fefefe',
-  textColor: '#000',
-  selTextColor: '#111',
-  borderColor: '#efefef',
+const defaultConfig = {
   rowSize: 25,
   boxSize: 18,
 };
+
+interface AchievementsChartConfig extends ColorsConfig {
+  rowSize: number;
+  boxSize: number;
+}
 
 export type AchievementsChartItemData = {
   bgColor: Property.Color;
@@ -49,7 +48,7 @@ export type AchievementsChartData = {
 
 export type AchievementsChartProps = {
   items: Array<AchievementsChartData>;
-  config?: AchievementsChartConfig;
+  config?: IAchievementsChartConfig;
   tooltip?: React.FC<{
     item?: { item: AchievementsChartData; badge?: AchievementsChartItemData };
   }>;
@@ -60,7 +59,7 @@ function createLineItem(
   item: AchievementsChartData,
   top: number,
   theConfig: AchievementsChartConfig,
-  bgColor: Property.Color
+  bgColor: DefaultColorOrFunc
 ) {
   const c = new ContainerDrawItem();
   c.items = [];
@@ -69,21 +68,18 @@ function createLineItem(
   c.left = 0;
   c.data = { item };
 
-  const ROW_HEIGHT = theConfig.rowSize || 25;
-  const BOX_SIZE = theConfig.boxSize || 18;
-
-  //c.color = theConfig.textColor || '#111';
-  //Create Badges
+  const ROW_HEIGHT = theConfig.rowSize;
+  const BOX_SIZE = theConfig.boxSize;
 
   item.badges?.forEach((b: AchievementsChartItemData, j: number) => {
     const bd = BoxDrawItem.create(
       j * BOX_SIZE,
       top + (ROW_HEIGHT - BOX_SIZE) / 2,
       BOX_SIZE,
-      theConfig.textColor || '#333',
+      theConfig.textColor,
       b.bgColor,
-      theConfig.selBgColor || '#fff',
-      theConfig.borderColor || '#666',
+      theConfig.selBgColor,
+      theConfig.borderColor,
       { item, badge: b },
       ''
     );
@@ -96,8 +92,8 @@ function createLineItem(
       5 * BOX_SIZE,
       top,
       ROW_HEIGHT,
-      theConfig.textColor || '#333',
-      bgColor || '#fff',
+      theConfig.textColor,
+      bgColor,
       item.name,
       { item }
     )
@@ -108,10 +104,10 @@ function createLineItem(
       200 + j * BOX_SIZE,
       top + (ROW_HEIGHT - BOX_SIZE) / 2,
       BOX_SIZE,
-      theConfig.textColor || '#333',
+      theConfig.textColor,
       b.bgColor,
-      theConfig.selBgColor || '#fff',
-      theConfig.borderColor || '#666',
+      theConfig.selBgColor,
+      theConfig.borderColor,
       { item, badge: b },
       ''
     );
@@ -122,10 +118,10 @@ function createLineItem(
         200 + j * BOX_SIZE + (BOX_SIZE - 5) / 2,
         top + (ROW_HEIGHT - BOX_SIZE) / 2 - 5 / 2,
         5,
-        theConfig.textColor || '#333',
+        theConfig.textColor,
         'green',
-        theConfig.selBgColor || '#fff',
-        theConfig.borderColor || '#666',
+        theConfig.selBgColor,
+        theConfig.borderColor,
         { item, badge: b },
         ''
       );
@@ -136,66 +132,58 @@ function createLineItem(
   return c;
 }
 
+function createDrawItems(
+  items: Array<AchievementsChartData>,
+  theConfig: AchievementsChartConfig
+) {
+  const dItems: Array<DrawItem> = [];
+
+  const width = items.reduce(
+    (p1: number, c: AchievementsChartData) =>
+      Math.max(
+        p1,
+        c.badges.length + c.timeline.length * (theConfig.boxSize || 20) + 200
+      ),
+    0
+  );
+
+  items.forEach((item: AchievementsChartData, index: number) => {
+    const c1 = createLineItem(
+      item,
+      index * (theConfig.rowSize || 25),
+      theConfig,
+      index % 2 === 0 ? theConfig.defaultBgColor : theConfig.alternateBgColor
+    );
+    c1.width = width;
+    dItems.push(c1);
+  });
+
+  return dItems;
+}
+
 export function AchievementsChart(props: AchievementsChartProps) {
   const { items, config, tooltip, onClick } = props;
 
-  const [selected, setSelected] = useState<AchievementsChartItemData | null>(
-    null
+  const theConfig = useMemo(
+    () =>
+      ({
+        ...defaultConfig,
+        ...getConfig(config),
+      } as AchievementsChartConfig),
+    [config]
   );
 
-  const theConfig = useMemo(() => ({ ...defaultConfig, ...config }), [config]);
-
-  const drawItems = useMemo(() => {
-    const dItems: Array<DrawItem> = [];
-
-    const width = items.reduce(
-      (p1: number, c: AchievementsChartData) =>
-        Math.max(
-          p1,
-          c.badges.length + c.timeline.length * (theConfig.boxSize || 20) + 200
-        ),
-      0
-    );
-
-    items.forEach((item: AchievementsChartData, index: number) => {
-      const c1 = createLineItem(
-        item,
-        index * (theConfig.rowSize || 25),
-        theConfig,
-        (index % 2 === 0
-          ? theConfig.defaultBgColor
-          : theConfig.alternateBgColor) || '#fff'
-      );
-      c1.width = width;
-      dItems.push(c1);
-    });
-
-    return dItems;
-  }, [items, theConfig]);
-
-  const handleOnHover = useCallback(
-    (item: any) => {
-      setSelected(item);
-    },
-    [setSelected]
-  );
+  const drawItems = useMemo(() => createDrawItems(items, theConfig), [
+    items,
+    theConfig,
+  ]);
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        padding: '10px',
-        justifyContent: 'stretch',
-        backgroundColor: theConfig.defaultBgColor,
-        color: theConfig.textColor,
-      }}
-    >
-      <CanvasContainer
-        drawItems={drawItems}
-        onClick={onClick}
-        onHover={handleOnHover}
-      ></CanvasContainer>
-      <ChartTooltip tooltip={tooltip} selected={selected} />
-    </div>
+    <CanvasChart
+      drawItems={drawItems}
+      onClick={onClick}
+      theConfig={theConfig}
+      tooltip={tooltip}
+    ></CanvasChart>
   );
 }

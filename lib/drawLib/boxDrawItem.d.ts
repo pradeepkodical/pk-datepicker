@@ -1,11 +1,13 @@
 import { DrawItem, StringOrFunc } from "./drawItem";
 export declare class BoxDrawItem extends DrawItem {
     bgColor: StringOrFunc;
-    color: string;
-    borderColor: string;
+    color: StringOrFunc;
+    borderColor: StringOrFunc;
     selBgColor: StringOrFunc;
     text?: string;
+    textAlign?: string;
     sideKick?: DrawItem;
     draw(ctx: any): void;
-    static create(left: number, top: number, size: number, color: string, bgColor: StringOrFunc, selBgColor: StringOrFunc, borderColor: string, data: any, text?: string): BoxDrawItem;
+    setTextAlign(textAlign: "left" | "right" | "center"): this;
+    static create(left: number, top: number, size: number, color: StringOrFunc, bgColor: StringOrFunc, selBgColor: StringOrFunc, borderColor: StringOrFunc, data: any, text?: string): BoxDrawItem;
 }

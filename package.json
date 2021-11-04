@@ -1,6 +1,6 @@
 {
-  "name": "kpr-charts",
-  "version": "0.1.7",
+  "name": "ka-charts",
+  "version": "1.0.3",
   "private": false,
   "dependencies": {
     "date-fns": "^2.22.1"

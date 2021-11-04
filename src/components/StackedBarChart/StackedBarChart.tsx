@@ -1,35 +1,30 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
 
 import { DrawItem } from '../../drawLib/drawItem';
-import CanvasContainer from '../../drawLib/canvasContainer';
 import { ContainerDrawItem } from '../../drawLib/containerDrawItem';
 import { BoxDrawItem } from '../../drawLib/boxDrawItem';
 
 import { Property } from 'csstype';
 import React from 'react';
-import { ChartTooltip } from '../ChartTooltip/ChartTooltip';
+import { ColorsConfig, getConfig, IColorsConfig } from '../ColorsConfig';
+import { CanvasChart } from '../CanvasChart/CanvasChart';
 
-type StackedBarChartConfig = {
-  selBgColor?: Property.Color;
-  defaultBgColor?: Property.Color;
-  alternateBgColor?: Property.Color;
-  textColor?: Property.Color;
-  selTextColor?: Property.Color;
-  borderColor?: Property.Color;
-
+interface IStackedBarChartConfig extends IColorsConfig {
   barSize?: number;
   gutterSize?: number;
-};
+  height?: number | 'auto';
+}
 
-const defaultConfig: StackedBarChartConfig = {
-  selBgColor: '#dcf5ff',
-  defaultBgColor: '#fff',
-  alternateBgColor: '#fefefe',
-  textColor: '#000',
-  selTextColor: '#111',
-  borderColor: '#efefef',
+interface StackedBarChartConfig extends ColorsConfig {
+  barSize: number;
+  gutterSize: number;
+  height: number | 'auto';
+}
+
+const defaultConfig = {
   barSize: 18,
   gutterSize: 5,
+  height: 200,
 };
 
 export type StackedBarChartItemData = {
@@ -45,7 +40,7 @@ export type StackedBarChartData = {
 
 export type StackedBarChartProps = {
   items: Array<StackedBarChartData>;
-  config?: StackedBarChartConfig;
+  config?: IStackedBarChartConfig;
   tooltip?: React.FC<{ item?: StackedBarChartItemData }>;
   onClick?: (data: StackedBarChartItemData) => void;
 };
@@ -53,17 +48,20 @@ export type StackedBarChartProps = {
 export function StackedBarChart(props: StackedBarChartProps) {
   const { items, config, tooltip, onClick } = props;
 
-  const [selected, setSelected] = useState<StackedBarChartItemData | null>(
-    null
+  const theConfig = useMemo(
+    () =>
+      ({
+        ...defaultConfig,
+        ...getConfig(config),
+      } as StackedBarChartConfig),
+    [config]
   );
-
-  const theConfig = useMemo(() => ({ ...defaultConfig, ...config }), [config]);
 
   const drawItems = useMemo(() => {
     const dItems: Array<DrawItem> = [];
-    const COL_SIZE = (theConfig.barSize || 0) + (theConfig.gutterSize || 0);
-    const CELL_HEIGHT = theConfig.barSize || 0;
-
+    const COL_SIZE = theConfig.barSize + theConfig.gutterSize;
+    const CELL_HEIGHT = theConfig.barSize;
+    let HEIGHT_SCALE = 1.0;
     const maxHeight =
       CELL_HEIGHT *
       items.reduce(
@@ -79,28 +77,33 @@ export function StackedBarChart(props: StackedBarChartProps) {
         0
       );
 
+    if (theConfig.height !== 'auto') {
+      HEIGHT_SCALE = theConfig.height / maxHeight;
+    }
+
     items.forEach((item: StackedBarChartData, i: number) => {
       let top =
-        maxHeight -
-        CELL_HEIGHT *
-          item.items.reduce(
-            (p: number, c: StackedBarChartItemData) => p + c.value,
-            0
-          );
+        HEIGHT_SCALE *
+        (maxHeight -
+          CELL_HEIGHT *
+            item.items.reduce(
+              (p: number, c: StackedBarChartItemData) => p + c.value,
+              0
+            ));
       let h = 0;
       item.items.forEach((sItem: StackedBarChartItemData, j: number) => {
         const ditem = BoxDrawItem.create(
           i * COL_SIZE,
           top,
-          theConfig.barSize || 5,
-          theConfig.textColor || '#111',
-          sItem.bgColor || '#fff',
-          theConfig.selBgColor || '#fff',
-          theConfig.borderColor || '#fff',
+          theConfig.barSize,
+          theConfig.textColor,
+          sItem.bgColor,
+          theConfig.selBgColor,
+          theConfig.borderColor,
           sItem,
           ''
         );
-        h = sItem.value * CELL_HEIGHT;
+        h = HEIGHT_SCALE * sItem.value * CELL_HEIGHT;
         ditem.height = h;
         top += h;
         dItems.push(ditem);
@@ -109,34 +112,17 @@ export function StackedBarChart(props: StackedBarChartProps) {
 
     const c = new ContainerDrawItem();
     c.items = dItems;
-    c.bgColor = theConfig.defaultBgColor || '#fff';
-    c.color = theConfig.textColor || '#111';
+    c.bgColor = theConfig.defaultBgColor;
+    c.color = theConfig.textColor;
     return [c];
   }, [items, theConfig]);
 
-  const handleOnHover = useCallback(
-    (item: any) => {
-      setSelected(item);
-    },
-    [setSelected]
-  );
-
   return (
-    <div
-      style={{
-        display: 'flex',
-        padding: '10px',
-        justifyContent: 'stretch',
-        backgroundColor: theConfig.defaultBgColor,
-        color: theConfig.textColor,
-      }}
-    >
-      <CanvasContainer
-        drawItems={drawItems}
-        onClick={onClick}
-        onHover={handleOnHover}
-      ></CanvasContainer>
-      <ChartTooltip tooltip={tooltip} selected={selected} />
-    </div>
+    <CanvasChart
+      drawItems={drawItems}
+      onClick={onClick}
+      theConfig={theConfig}
+      tooltip={tooltip}
+    ></CanvasChart>
   );
 }

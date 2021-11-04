@@ -1,17 +1,17 @@
 # React Charts
 
-kpr-charts is a react charts library, developed and maintained by Pradeep(kpradeeprao@gmail.com).
+ka-charts is a react charts library, developed and maintained by Pradeep(kpradeeprao@gmail.com).
 
 ## Installation
 
-Use the package manager to install kpr-charts.
+Use the package manager to install ka-charts.
 
 ```bash
-yarn add kpr-charts
+yarn add ka-charts
 ```
 
 ```bash
-npm -i kpr-charts
+npm i ka-charts
 ```
 
 ## Usage
@@ -55,7 +55,7 @@ npm -i kpr-charts
 
 ## Demo
 
-[Demo](https://codesandbox.io/s/rough-bush-bp1jg)
+[Demo](https://codesandbox.io/s/ka-charts-bp1jg)
 
 ## Contributing
 

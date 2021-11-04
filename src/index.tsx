@@ -19,3 +19,6 @@ export type {
   AttendeesChartEventData,
   AttendeesChartPurchaseData,
 } from './components/AttendeesChart/AttendeesChart';
+
+export { BasicGantChart } from './components/BasicGantChart/BasicGantChart';
+export type { BasicGantChartData } from './components/BasicGantChart/BasicGantChart';

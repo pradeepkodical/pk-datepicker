@@ -19,7 +19,7 @@ export default function CanvasContainer(props: CanvasContainerProps) {
     () =>
       Math.min(
         20000,
-        drawItems.reduce((p: number, c: DrawItem) => p + c.getHeight(), 50)
+        drawItems.reduce((p: number, c: DrawItem) => p + c.getHeight(), 0)
       ),
     [drawItems]
   );
@@ -70,7 +70,7 @@ export default function CanvasContainer(props: CanvasContainerProps) {
             di.hovering = false;
             di.parent?.draw(ctx);
             di.draw(ctx);
-            if (onHover) onHover(null);
+            //if (onHover) onHover(null);
           }
         }
       };
@@ -112,7 +112,7 @@ export default function CanvasContainer(props: CanvasContainerProps) {
         minHeight,
       }}
     >
-      <canvas width={width + 50} height={height} ref={canvasRef} />
+      <canvas width={width} height={height} ref={canvasRef} />
     </div>
   );
 }

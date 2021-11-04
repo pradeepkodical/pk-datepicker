@@ -42,7 +42,7 @@ const generateData = (i: number): AttendeesChartData => {
             (e) =>
               e.id === myEvents[Math.floor(Math.random() * myEvents.length)]
           )?.date || new Date(),
-        color: 'green',
+        color: '#8f9a27',
       },
       {
         id: '2',
@@ -53,10 +53,11 @@ const generateData = (i: number): AttendeesChartData => {
               e.id === myEvents[Math.floor(Math.random() * myEvents.length)]
           )?.date || new Date(),
 
-        color: 'pink',
+        color: '#f57c00',
       },
     ],
     events: myEvents,
+    badges: [{ bgColor: 'red' }, { bgColor: 'pink' }],
   };
 };
 const data: Array<AttendeesChartData> = Array.from(
@@ -93,11 +94,14 @@ LightMode.args = {
     defaultBgColor: '#fff',
     textColor: '#000',
     selTextColor: 'pink',
-    borderColor: '#999',
+    borderColor: '#eee',
+
+    purchaseColor: '#388e3c',
+    eventColor: '#3f51b5',
 
     colSize: 180,
-    rowSize: 40,
-    circleSize: 10,
+    rowSize: 25,
+    circleSize: 8,
   },
   attendees: data,
   events,
@@ -113,6 +117,10 @@ DarkMode.args = {
     textColor: '#fff',
     selTextColor: 'red',
     borderColor: '#666',
+
+    purchaseColor: '#388e3c',
+    eventColor: '#3f51b5',
+
     colSize: 150,
     rowSize: 30,
     circleSize: 10,

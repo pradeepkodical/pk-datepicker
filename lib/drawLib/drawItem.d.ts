@@ -1,8 +1,9 @@
+import { DefaultColorOrFunc } from '../components/ColorsConfig';
 export interface IDrawItem {
     draw(ctx: any): void;
     moveBy(x1: number, y1: number): IDrawItem;
 }
-export declare type StringOrFunc = string | (() => Array<string>);
+export declare type StringOrFunc = DefaultColorOrFunc;
 export declare abstract class DrawItem implements IDrawItem {
     top: number;
     left: number;
@@ -19,5 +20,6 @@ export declare abstract class DrawItem implements IDrawItem {
     getHit(x: number, y: number): DrawItem | null;
     moveBy(x: number, y: number): this;
     setHeight(h: number): this;
-    getColor(ctx: any, color: string | (() => Array<string>)): any;
+    getSelectedBg(ctx: any, defaultColor: StringOrFunc, selColor: StringOrFunc): any;
+    getColor(ctx: any, color: StringOrFunc): any;
 }

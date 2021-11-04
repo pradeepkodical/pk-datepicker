@@ -6,7 +6,7 @@ export class ContainerDrawItem extends BoxDrawItem {
     lines: Array<IDrawItem> = [];
 
     draw(ctx: any) {
-        ctx.fillStyle = this.bgColor;
+        ctx.fillStyle = this.getColor(ctx, this.bgColor);
         ctx.fillRect(this.left, this.top, this.getWidth(), this.getHeight());
 
         this.lines.forEach((x: IDrawItem) => x.draw(ctx));

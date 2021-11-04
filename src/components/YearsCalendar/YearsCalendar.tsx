@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useMemo,
-  useEffect,
-  useState,
-  createElement,
-} from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { format, addDays, getWeek, getDaysInYear } from 'date-fns';
 
@@ -18,29 +12,18 @@ import { GridDrawItem } from '../../drawLib/gridDrawItem';
 
 import { Property } from 'csstype';
 
-import useMousePosition from '../../hooks/useMousePosition';
-import useDelayResetState from '../../hooks/useDelayResetState';
 import { ChartTooltip } from '../ChartTooltip/ChartTooltip';
 import React from 'react';
+import { ColorsConfig, getConfig, IColorsConfig } from '../ColorsConfig';
 
-const CELL_SIZE = 25;
-
-type ColorConfig = {
-  selBgColor?: Property.Color;
-  defaultBgColor?: Property.Color;
-  alternateBgColor?: Property.Color;
-  textColor?: Property.Color;
-  selTextColor?: Property.Color;
-  borderColor?: Property.Color;
-};
-
-const defaultConfig: ColorConfig = {
-  selBgColor: '#dcf5ff',
-  defaultBgColor: '#fff',
-  alternateBgColor: '#fefefe',
-  textColor: '#000',
-  selTextColor: '#111',
-  borderColor: '#efefef',
+interface IYearsCalendarConfig extends IColorsConfig {
+  cellSize?: number;
+}
+interface YearsCalendarConfig extends ColorsConfig {
+  cellSize: number;
+}
+const defaultConfig = {
+  cellSize: 25,
 };
 
 export type YearCalendarData = {
@@ -48,24 +31,24 @@ export type YearCalendarData = {
   bgColor: Property.Color;
 };
 
-function getLocation(date: Date) {
-  const top = date.getDay() * CELL_SIZE;
+function getLocation(date: Date, config: YearsCalendarConfig) {
+  const top = date.getDay() * config.cellSize;
   let w = getWeek(date);
   if (date.getMonth() > 10 && w < 45) w = 53;
-  const left = w * CELL_SIZE;
+  const left = w * config.cellSize;
   return { top, left };
 }
 
-function getWeekDayHeader(config: ColorConfig) {
+function getWeekDayHeader(config: YearsCalendarConfig) {
   const arr: Array<DrawItem> = [];
   ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach((x: string, idx: number) => {
     arr.push(
       TextDrawItem.create(
-        CELL_SIZE,
-        (idx + 1) * CELL_SIZE,
-        CELL_SIZE,
-        config.textColor || '#111',
-        config.defaultBgColor || '#fff',
+        config.cellSize,
+        (idx + 1) * config.cellSize,
+        config.cellSize,
+        config.textColor,
+        config.defaultBgColor,
         x,
         {}
       )
@@ -74,7 +57,7 @@ function getWeekDayHeader(config: ColorConfig) {
   return arr;
 }
 
-function getMonthsHeader(year: number, config: ColorConfig) {
+function getMonthsHeader(year: number, config: YearsCalendarConfig) {
   const startDate = new Date(year, 0, 15);
   const arr: Array<DrawItem> = [];
   for (var i = 0; i < 12; i++) {
@@ -84,9 +67,9 @@ function getMonthsHeader(year: number, config: ColorConfig) {
 
     arr.push(
       TextDrawItem.create(
-        (1 + w) * CELL_SIZE,
+        (1 + w) * config.cellSize,
         0,
-        CELL_SIZE,
+        config.cellSize,
         config.textColor || '#111',
         config.defaultBgColor || '#fff',
         format(startDate, 'MMM'),
@@ -100,7 +83,7 @@ function getMonthsHeader(year: number, config: ColorConfig) {
 function YearBox(props: {
   year: number;
   items: Array<YearCalendarData>;
-  config: ColorConfig;
+  config: YearsCalendarConfig;
   onClick?: (item: any) => void;
   onHover?: (item: any) => void;
 }) {
@@ -124,7 +107,7 @@ function YearBox(props: {
     });
 
     for (let i = 0; i < maxDays; i++) {
-      const loc = getLocation(startDate);
+      const loc = getLocation(startDate, config);
       let bgColor =
         startDate.getMonth() % 2 === 0
           ? config.defaultBgColor
@@ -132,26 +115,26 @@ function YearBox(props: {
       const index = startDate.toDateString();
       if (allData[index]) {
         const item = GridDrawItem.create(
-          loc.top + CELL_SIZE,
-          loc.left + CELL_SIZE,
-          CELL_SIZE - 2,
-          config.selTextColor || 'brown',
-          bgColor || '#fff',
-          config.selBgColor || '#fff',
-          config.borderColor || '#fff',
+          loc.top + config.cellSize,
+          loc.left + config.cellSize,
+          config.cellSize - 2,
+          config.selTextColor,
+          bgColor,
+          config.selBgColor,
+          config.borderColor,
           allData[index],
           `${startDate.getDate()}`
         );
         arr.push(item);
       } else {
         const item = BoxDrawItem.create(
-          loc.left + CELL_SIZE,
-          loc.top + CELL_SIZE,
-          CELL_SIZE - 2,
-          config.textColor || '#111',
-          bgColor || '#fff',
-          config.selBgColor || '#fff',
-          config.borderColor || '#fff',
+          loc.left + config.cellSize,
+          loc.top + config.cellSize,
+          config.cellSize - 2,
+          config.textColor,
+          bgColor,
+          config.selBgColor,
+          config.borderColor,
           '',
           `${startDate.getDate()}`
         );
@@ -162,8 +145,8 @@ function YearBox(props: {
 
     const c = new ContainerDrawItem();
     c.items = arr;
-    c.bgColor = config.defaultBgColor || '#fff';
-    c.color = config.textColor || '#111';
+    c.bgColor = config.defaultBgColor;
+    c.color = config.textColor;
     return [c];
   }, [year, items, config]);
 
@@ -173,8 +156,8 @@ function YearBox(props: {
         display: 'flex',
         padding: '10px',
         justifyContent: 'center',
-        backgroundColor: config.defaultBgColor,
-        color: config.textColor,
+        backgroundColor: config.background,
+        color: config.color,
       }}
     >
       <div>
@@ -182,7 +165,7 @@ function YearBox(props: {
           style={{
             fontWeight: 'bold',
             fontSize: 'x-large',
-            transform: 'translateY(80px) rotate(-90deg)',
+            transform: `translateY(${config.cellSize * 4}px) rotate(-90deg)`,
           }}
         >
           {year}
@@ -199,7 +182,7 @@ function YearBox(props: {
 
 export type YearsCalendarProps = {
   items: Array<YearCalendarData>;
-  config?: ColorConfig;
+  config?: IYearsCalendarConfig;
   onClick?: (data: YearCalendarData | null) => void;
   onHover?: (data: YearCalendarData | null) => void;
   tooltip?: React.FC<{ item?: YearCalendarData }>;
@@ -214,7 +197,14 @@ export function YearsCalendar(props: YearsCalendarProps) {
     [items]
   );
 
-  const theConfig = { ...defaultConfig, ...config };
+  const theConfig = useMemo(
+    () =>
+      ({
+        ...defaultConfig,
+        ...getConfig(config),
+      } as YearsCalendarConfig),
+    [config]
+  );
 
   const handleHover = useCallback(
     (item: any) => {
@@ -228,8 +218,8 @@ export function YearsCalendar(props: YearsCalendarProps) {
     <div
       style={{
         padding: '10px',
-        backgroundColor: theConfig.defaultBgColor,
-        color: theConfig.textColor,
+        backgroundColor: theConfig.background,
+        color: theConfig.color,
       }}
     >
       {Object.keys(groupedItems).map((key: any, i: number) => (

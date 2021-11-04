@@ -6,3 +6,5 @@ export { AchievementsChart } from './components/AchievementsChart/AchievementsCh
 export type { AchievementsChartData, AchievementsChartItemData, } from './components/AchievementsChart/AchievementsChart';
 export { AttendeesChart } from './components/AttendeesChart/AttendeesChart';
 export type { AttendeesChartData, AttendeesChartEventData, AttendeesChartPurchaseData, } from './components/AttendeesChart/AttendeesChart';
+export { BasicGantChart } from './components/BasicGantChart/BasicGantChart';
+export type { BasicGantChartData } from './components/BasicGantChart/BasicGantChart';

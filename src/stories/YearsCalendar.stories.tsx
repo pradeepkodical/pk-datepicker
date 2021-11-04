@@ -42,12 +42,11 @@ function Tooltip(props: { item?: YearCalendarData }) {
   return (
     <div
       style={{
-        backgroundColor: '#dcf5ff',
+        backgroundColor: '#fefefe',
         color: '#333',
         padding: '10px',
         border: '1px solid #eee',
         borderRadius: '10px',
-        //boxShadow: '1px 1px 5px 5px #eee',
       }}
     >
       My tool tip:{`${item?.date}`}
@@ -64,6 +63,8 @@ LightMode.args = {
     textColor: '#000',
     selTextColor: 'pink',
     borderColor: '#eee',
+
+    cellSize: 20,
   },
   items: data,
   tooltip: Tooltip,
@@ -78,6 +79,8 @@ DarkMode.args = {
     textColor: '#fff',
     selTextColor: 'red',
     borderColor: '#222',
+
+    cellSize: 20,
   },
   items: data,
   tooltip: Tooltip,

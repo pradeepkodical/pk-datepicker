@@ -1,14 +1,9 @@
-import { DrawItem } from './drawItem';
+import { BoxDrawItem } from './boxDrawItem';
 
-export class CircleDrawItem extends DrawItem {
-  bgColor: string = '#fff';
-  borderColor: string = '#fff';
-  selBgColor: string = '#dcf5ff';
-  text: string = '';
+export class CircleDrawItem extends BoxDrawItem {
   draw(ctx: any) {
-    ctx.fillStyle =
-      this.selected || this.hovering ? this.selBgColor : this.bgColor;
-    ctx.strokeStyle = this.borderColor;
+    ctx.fillStyle = this.getSelectedBg(ctx, this.bgColor, this.selBgColor);
+    ctx.strokeStyle = this.getColor(ctx, this.borderColor);
     ctx.beginPath();
     ctx.arc(
       this.left + this.getWidth() / 2,

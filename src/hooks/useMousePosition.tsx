@@ -23,14 +23,14 @@ export function useFollowMouse() {
     const setFromEvent = (e: MouseEvent) => {
       const elm = ref.current;
       if (elm && elm.style) {
-        let left = e.clientX;
-        let top = e.clientY;
+        let left = e.clientX + 5;
+        let top = e.clientY + 5;
 
         if (e.clientX + elm.offsetWidth > window.innerWidth) {
-          left = window.innerWidth - elm.offsetWidth;
+          left = window.innerWidth - elm.offsetWidth - 10;
         }
         if (e.clientY + elm.offsetHeight > window.innerWidth) {
-          top = window.innerHeight - elm.offsetHeight;
+          top = window.innerHeight - elm.offsetHeight - 10;
         }
 
         elm.style.left = `${left}px`;

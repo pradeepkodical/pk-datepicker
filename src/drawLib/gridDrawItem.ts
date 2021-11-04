@@ -1,11 +1,12 @@
+import { StringColorOrFunc } from './../components/ColorsConfig';
 import { BoxDrawItem } from "./boxDrawItem";
 import { ContainerDrawItem } from "./containerDrawItem";
 
 export class GridDrawItem extends ContainerDrawItem {
-    bgColor: string = '#fff';
-    color: string = '#111';
-    borderColor: string = '#fff';
-    selBgColor: string = '#dcf5ff';
+    bgColor: StringColorOrFunc = '#fff';
+    color: StringColorOrFunc = '#111';
+    borderColor: StringColorOrFunc = '#fff';
+    selBgColor: StringColorOrFunc = '#dcf5ff';
     text?: string;
     draw(ctx: any) {
         ctx.fillStyle = this.selected || this.hovering ? this.selBgColor : this.bgColor;
@@ -36,10 +37,10 @@ export class GridDrawItem extends ContainerDrawItem {
         top: number,
         left: number,
         size: number,
-        color: string,
-        bgColor: string,
-        selBgColor: string,
-        borderColor: string,
+        color: StringColorOrFunc,
+        bgColor: StringColorOrFunc,
+        selBgColor: StringColorOrFunc,
+        borderColor: StringColorOrFunc,
         data: any,
         text?: string
     ) {

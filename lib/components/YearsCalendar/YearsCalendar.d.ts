@@ -1,20 +1,16 @@
 import { Property } from 'csstype';
 import React from 'react';
-declare type ColorConfig = {
-    selBgColor?: Property.Color;
-    defaultBgColor?: Property.Color;
-    alternateBgColor?: Property.Color;
-    textColor?: Property.Color;
-    selTextColor?: Property.Color;
-    borderColor?: Property.Color;
-};
+import { IColorsConfig } from '../ColorsConfig';
+interface IYearsCalendarConfig extends IColorsConfig {
+    cellSize?: number;
+}
 export declare type YearCalendarData = {
     date: Date;
     bgColor: Property.Color;
 };
 export declare type YearsCalendarProps = {
     items: Array<YearCalendarData>;
-    config?: ColorConfig;
+    config?: IYearsCalendarConfig;
     onClick?: (data: YearCalendarData | null) => void;
     onHover?: (data: YearCalendarData | null) => void;
     tooltip?: React.FC<{
