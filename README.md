@@ -41,7 +41,39 @@ npm i ka-charts
     },
   ]}
   onClick={(item) => {}}
-  onHover={(item, x: number, y: number) => {}}
+/>
+```
+
+```tsx
+<StackedBarChart
+  config={{
+    alternateBgColor: '#eee',
+    borderColor: '#999',
+    defaultBgColor: '#fff',
+    selBgColor: '#dcf5ff',
+    selTextColor: 'pink',
+    textColor: '#000',
+  }}
+  items={[
+    {
+      key: '111',
+      items: [
+        {
+          bgColor: 'red',
+          key: '1',
+          value: 111,
+          data: {},
+        },
+        {
+          bgColor: 'green',
+          key: '2',
+          value: 2111,
+          data: {},
+        },
+      ],
+    },
+  ]}
+  onClick={(item) => {}}
 />
 ```
 
@@ -77,8 +109,7 @@ npm i ka-charts
       data: {},
     },
   ]}
-  onClick={(item: YearCalendarData) => {}}
-  onHover={(item: YearCalendarData, x: number, y: number) => {}}
+  onClick={(item) => {}}
 />
 ```
 

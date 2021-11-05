@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import CanvasContainer from '../../drawLib/canvasContainer';
 import { DrawItem } from '../../drawLib/drawItem';
 import { ChartTooltip } from '../ChartTooltip/ChartTooltip';
@@ -6,13 +6,15 @@ import { ColorsConfig } from '../ColorsConfig';
 
 interface CanvasChartProps {
   theConfig: ColorsConfig;
-  drawItems: Array<DrawItem>;
+  getDrawItems: (width: number) => Array<DrawItem>;
   tooltip?: React.FC<{ item?: any }>;
   onClick?: (data: any) => void;
 }
 export function CanvasChart(props: CanvasChartProps) {
-  const { drawItems, theConfig, tooltip, onClick } = props;
+  const { getDrawItems, theConfig, tooltip, onClick } = props;
   const [selected, setSelected] = useState<any>();
+  const [width, setWidth] = useState(0);
+  const ref = useRef<any>();
   const handleOnHover = useCallback(
     (item: any) => {
       setSelected(item);
@@ -20,8 +22,20 @@ export function CanvasChart(props: CanvasChartProps) {
     [setSelected]
   );
 
+  useEffect(() => {
+    if (ref.current) {
+      setWidth(ref.current.offsetWidth);
+    }
+  }, [ref, setWidth]);
+
+  const drawItems = useMemo(() => (width > 0 ? getDrawItems(width - 40) : []), [
+    getDrawItems,
+    width,
+  ]);
+
   return (
     <div
+      ref={ref}
       style={{
         display: 'flex',
         padding: '10px',

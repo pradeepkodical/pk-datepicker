@@ -28,7 +28,9 @@ const generateData = (name: string, i: number) => {
     name,
     startDate: st,
     endDate: ed,
-    bgColor: () => ['orange', 'white', 'green'],
+    bgColor: () => ['#eee', 'transparent'],
+    itemBgColor: () =>
+      i % 2 === 0 ? ['orange', 'white', 'green'] : ['red', 'white', 'blue'],
   };
 };
 const data: Array<BasicGantChartData> = [
@@ -60,8 +62,8 @@ export const LightMode = Template.bind({});
 LightMode.args = {
   config: {
     selBgColor: '#dcf5ff',
-    alternateBgColor: '#eee',
-    defaultBgColor: '#fff',
+    alternateBgColor: () => ['#eee', 'white'],
+    defaultBgColor: () => ['white', '#eee'],
     textColor: '#000',
     selTextColor: 'pink',
     borderColor: '#eee',

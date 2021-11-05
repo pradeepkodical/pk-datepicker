@@ -1,6 +1,6 @@
 {
   "name": "ka-charts",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": false,
   "dependencies": {
     "date-fns": "^2.22.1"

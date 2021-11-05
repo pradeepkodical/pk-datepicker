@@ -1,10 +1,10 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { differenceInSeconds } from 'date-fns';
 import { ContainerDrawItem } from '../../drawLib/containerDrawItem';
 import { BoxDrawItem } from '../../drawLib/boxDrawItem';
-import CanvasContainer from '../../drawLib/canvasContainer';
+
 import { DrawItem } from '../../drawLib/drawItem';
-import { ChartTooltip } from '../ChartTooltip/ChartTooltip';
+
 import {
   DefaultColorOrFunc,
   IColorsConfig,
@@ -39,7 +39,7 @@ interface BasicGantChartConfig extends ColorsConfig {
 }
 
 function createItem(
-  item: any,
+  item: BasicGantChartData,
   top: number,
   minStartDate: Date,
   maxEndDate: Date,
@@ -65,7 +65,7 @@ function createItem(
       top,
       nameWidth,
       theConfig.textColor,
-      item.bgColor,
+      item.bgColor || bgColor,
       theConfig.selBgColor,
       theConfig.borderColor,
       item,
@@ -76,8 +76,12 @@ function createItem(
       .setFont(`${theConfig.fontSize}px Verdana`)
   );
 
-  const left = theConfig.colSize * (s / t);
-  const width = Math.max(15, theConfig.colSize * (e / t) - left);
+  const maxWidth = Math.max(
+    cWidth - nameWidth - theConfig.rowSize,
+    2.2 * nameWidth
+  );
+  const left = maxWidth * (s / t);
+  const width = Math.max(15, maxWidth * (e / t) - left);
 
   c.items.push(
     BoxDrawItem.create(
@@ -85,7 +89,7 @@ function createItem(
       top,
       width,
       theConfig.textColor,
-      theConfig.itemColor,
+      item.itemBgColor || theConfig.itemColor,
       theConfig.selBgColor,
       theConfig.borderColor,
       item,
@@ -103,7 +107,8 @@ export type BasicGantChartData = {
   startDate: Date;
   endDate: Date;
   data?: any;
-  bgColor: StringColorOrFunc;
+  itemBgColor?: StringColorOrFunc;
+  bgColor?: StringColorOrFunc;
 };
 
 export type BasicGantChartProps = {
@@ -115,7 +120,8 @@ export type BasicGantChartProps = {
 
 function createDrawItems(
   items: Array<BasicGantChartData>,
-  theConfig: BasicGantChartConfig
+  theConfig: BasicGantChartConfig,
+  width: number
 ) {
   const arr: Array<DrawItem> = [];
 
@@ -136,10 +142,11 @@ function createDrawItems(
 
   const nameWidth = items.reduce(
     (p: number, c: BasicGantChartData) =>
-      Math.max(p, c.name.length * theConfig.fontSize),
+      Math.max(p, c.name.length * theConfig.fontSize * 0.7),
     0
   );
-  items.forEach((item: any, i: number) => {
+
+  items.forEach((item: BasicGantChartData, i: number) => {
     arr.push(
       createItem(
         item,
@@ -147,7 +154,7 @@ function createDrawItems(
         minStartDate,
         maxEndDate,
         nameWidth,
-        theConfig.colSize * 10,
+        width,
         i % 2 === 0 ? theConfig.alternateBgColor : theConfig.defaultBgColor,
         theConfig
       )
@@ -171,14 +178,14 @@ export function BasicGantChart(props: BasicGantChartProps) {
     [config]
   );
 
-  const drawItems = useMemo(() => createDrawItems(items, theConfig), [
-    items,
-    theConfig,
-  ]);
+  const getDrawItems = useCallback(
+    (width: number) => createDrawItems(items, theConfig, width),
+    [items, theConfig]
+  );
 
   return (
     <CanvasChart
-      drawItems={drawItems}
+      getDrawItems={getDrawItems}
       onClick={onClick}
       theConfig={theConfig}
       tooltip={tooltip}

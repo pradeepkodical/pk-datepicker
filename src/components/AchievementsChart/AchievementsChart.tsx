@@ -173,14 +173,14 @@ export function AchievementsChart(props: AchievementsChartProps) {
     [config]
   );
 
-  const drawItems = useMemo(() => createDrawItems(items, theConfig), [
-    items,
-    theConfig,
-  ]);
+  const getDrawItems = useCallback(
+    (width: number) => createDrawItems(items, theConfig),
+    [items, theConfig]
+  );
 
   return (
     <CanvasChart
-      drawItems={drawItems}
+      getDrawItems={getDrawItems}
       onClick={onClick}
       theConfig={theConfig}
       tooltip={tooltip}

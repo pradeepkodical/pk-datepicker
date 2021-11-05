@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { BoxDrawItem } from '../../drawLib/boxDrawItem';
 import { DrawItem, IDrawItem } from '../../drawLib/drawItem';
 import { Property } from 'csstype';
@@ -314,14 +314,14 @@ export function AttendeesChart(props: AttendeesChartProps) {
     [config]
   );
 
-  const drawItems = useMemo(
-    () => createDrawItems(attendees, events, theConfig),
+  const getDrawItems = useCallback(
+    (width: number) => createDrawItems(attendees, events, theConfig),
     [attendees, events, theConfig]
   );
 
   return (
     <CanvasChart
-      drawItems={drawItems}
+      getDrawItems={getDrawItems}
       onClick={onClick}
       theConfig={theConfig}
       tooltip={tooltip}

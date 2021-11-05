@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { DrawItem } from '../../drawLib/drawItem';
 import { ContainerDrawItem } from '../../drawLib/containerDrawItem';
@@ -45,6 +45,69 @@ export type StackedBarChartProps = {
   onClick?: (data: StackedBarChartItemData) => void;
 };
 
+function createDrawItems(
+  items: Array<StackedBarChartData>,
+  theConfig: StackedBarChartConfig
+) {
+  const dItems: Array<DrawItem> = [];
+  const COL_SIZE = theConfig.barSize + theConfig.gutterSize;
+  const CELL_HEIGHT = theConfig.barSize;
+  let HEIGHT_SCALE = 1.0;
+  const maxHeight =
+    CELL_HEIGHT *
+    items.reduce(
+      (p: number, c: StackedBarChartData) =>
+        Math.max(
+          p,
+          c.items.reduce(
+            (p1: number, c1: StackedBarChartItemData) => p1 + c1.value,
+            0
+          ),
+          0
+        ),
+      0
+    );
+
+  if (theConfig.height !== 'auto') {
+    HEIGHT_SCALE = theConfig.height / maxHeight;
+  }
+
+  items.forEach((item: StackedBarChartData, i: number) => {
+    let top =
+      HEIGHT_SCALE *
+      (maxHeight -
+        CELL_HEIGHT *
+          item.items.reduce(
+            (p: number, c: StackedBarChartItemData) => p + c.value,
+            0
+          ));
+    let h = 0;
+    item.items.forEach((sItem: StackedBarChartItemData, j: number) => {
+      const ditem = BoxDrawItem.create(
+        i * COL_SIZE,
+        top,
+        theConfig.barSize,
+        theConfig.textColor,
+        sItem.bgColor,
+        theConfig.selBgColor,
+        theConfig.borderColor,
+        sItem,
+        ''
+      );
+      h = HEIGHT_SCALE * sItem.value * CELL_HEIGHT;
+      ditem.height = h;
+      top += h;
+      dItems.push(ditem);
+    });
+  });
+
+  const c = new ContainerDrawItem();
+  c.items = dItems;
+  c.bgColor = theConfig.defaultBgColor;
+  c.color = theConfig.textColor;
+  return [c];
+}
+
 export function StackedBarChart(props: StackedBarChartProps) {
   const { items, config, tooltip, onClick } = props;
 
@@ -57,69 +120,14 @@ export function StackedBarChart(props: StackedBarChartProps) {
     [config]
   );
 
-  const drawItems = useMemo(() => {
-    const dItems: Array<DrawItem> = [];
-    const COL_SIZE = theConfig.barSize + theConfig.gutterSize;
-    const CELL_HEIGHT = theConfig.barSize;
-    let HEIGHT_SCALE = 1.0;
-    const maxHeight =
-      CELL_HEIGHT *
-      items.reduce(
-        (p: number, c: StackedBarChartData) =>
-          Math.max(
-            p,
-            c.items.reduce(
-              (p1: number, c1: StackedBarChartItemData) => p1 + c1.value,
-              0
-            ),
-            0
-          ),
-        0
-      );
-
-    if (theConfig.height !== 'auto') {
-      HEIGHT_SCALE = theConfig.height / maxHeight;
-    }
-
-    items.forEach((item: StackedBarChartData, i: number) => {
-      let top =
-        HEIGHT_SCALE *
-        (maxHeight -
-          CELL_HEIGHT *
-            item.items.reduce(
-              (p: number, c: StackedBarChartItemData) => p + c.value,
-              0
-            ));
-      let h = 0;
-      item.items.forEach((sItem: StackedBarChartItemData, j: number) => {
-        const ditem = BoxDrawItem.create(
-          i * COL_SIZE,
-          top,
-          theConfig.barSize,
-          theConfig.textColor,
-          sItem.bgColor,
-          theConfig.selBgColor,
-          theConfig.borderColor,
-          sItem,
-          ''
-        );
-        h = HEIGHT_SCALE * sItem.value * CELL_HEIGHT;
-        ditem.height = h;
-        top += h;
-        dItems.push(ditem);
-      });
-    });
-
-    const c = new ContainerDrawItem();
-    c.items = dItems;
-    c.bgColor = theConfig.defaultBgColor;
-    c.color = theConfig.textColor;
-    return [c];
-  }, [items, theConfig]);
+  const getDrawItems = useCallback(
+    (width: number) => createDrawItems(items, theConfig),
+    [items, theConfig]
+  );
 
   return (
     <CanvasChart
-      drawItems={drawItems}
+      getDrawItems={getDrawItems}
       onClick={onClick}
       theConfig={theConfig}
       tooltip={tooltip}
