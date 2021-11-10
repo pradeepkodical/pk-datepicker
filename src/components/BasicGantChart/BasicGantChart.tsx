@@ -54,7 +54,12 @@ function createItem(
   c.height = theConfig.rowSize;
   c.bgColor = bgColor;
   c.items = [];
-  c.width = cWidth;
+
+  const maxWidth = Math.max(
+    cWidth - nameWidth - theConfig.rowSize,
+    2 * nameWidth
+  );
+
   const t = differenceInSeconds(minStartDate, maxEndDate);
   const s = differenceInSeconds(minStartDate, item.startDate);
   const e = differenceInSeconds(minStartDate, item.endDate);
@@ -76,10 +81,8 @@ function createItem(
       .setFont(`${theConfig.fontSize}px Verdana`)
   );
 
-  const maxWidth = Math.max(
-    cWidth - nameWidth - theConfig.rowSize,
-    2.2 * nameWidth
-  );
+  c.width = Math.max(maxWidth + nameWidth, c.getWidth());
+
   const left = maxWidth * (s / t);
   const width = Math.max(15, maxWidth * (e / t) - left);
 

@@ -34,7 +34,7 @@ const generateData = (name: string, i: number) => {
   };
 };
 const data: Array<BasicGantChartData> = [
-  'Mark Zuckerberg',
+  'Mark Zuckerberg - Mark Zuckerberg',
   'Steve Jobs',
   'Bill Gates',
   'Jeff Bezos',
