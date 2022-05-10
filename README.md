@@ -1,121 +1,44 @@
-# React Charts
+# React Date Range Component
 
-ka-charts is a react charts library, developed and maintained by Pradeep(kpradeeprao@gmail.com).
+ka-daterange is a date-range component using mui 5.^, developed and maintained by Pradeep(kpradeeprao@gmail.com).
 
 ## Installation
 
-Use the package manager to install ka-charts.
+Use the package manager to install ka-date-range.
 
 ```bash
-yarn add ka-charts
+yarn add ka-daterange
 ```
 
 ```bash
-npm i ka-charts
+npm i ka-daterange
 ```
 
 ## Usage
 
 ```tsx
-<BasicGantChart
-  config={{
-    alternateBgColor: '#eee',
-    borderColor: '#999',
-    defaultBgColor: '#fff',
-    selBgColor: '#dcf5ff',
-    selTextColor: 'pink',
-    textColor: '#000',
-  }}
-  items={[
-    {
-      bgColor: 'red',
-      startDate: new Date('2021-10-29T00:49:49.911Z'),
-      endDate: new Date('2021-10-29T00:49:49.911Z'),
-      data: {},
-    },
-    {
-      bgColor: 'pink',
-      startDate: new Date('2021-10-29T00:49:49.911Z'),
-      endDate: new Date('2021-10-29T00:49:49.911Z'),
-      data: {},
-    },
-  ]}
-  onClick={(item) => {}}
-/>
+export function() {
+  const [range, setRange] = useState<PickerDateRange>({});
+  const onChange = (v: PickerDateRange) => {
+    setRange(v);
+  };
+  return <StaticDateRangePicker dateRange={range} onChange={onChange}/>
+}
 ```
 
 ```tsx
-<StackedBarChart
-  config={{
-    alternateBgColor: '#eee',
-    borderColor: '#999',
-    defaultBgColor: '#fff',
-    selBgColor: '#dcf5ff',
-    selTextColor: 'pink',
-    textColor: '#000',
-  }}
-  items={[
-    {
-      key: '111',
-      items: [
-        {
-          bgColor: 'red',
-          key: '1',
-          value: 111,
-          data: {},
-        },
-        {
-          bgColor: 'green',
-          key: '2',
-          value: 2111,
-          data: {},
-        },
-      ],
-    },
-  ]}
-  onClick={(item) => {}}
-/>
-```
-
-```tsx
-<YearsCalendar
-  config={{
-    alternateBgColor: '#eee',
-    borderColor: '#999',
-    defaultBgColor: '#fff',
-    selBgColor: '#dcf5ff',
-    selTextColor: 'pink',
-    textColor: '#000',
-  }}
-  items={[
-    {
-      bgColor: 'red',
-      date: new Date('2021-10-29T00:49:49.911Z'),
-      data: {},
-    },
-    {
-      bgColor: 'pink',
-      date: new Date('2019-02-01T06:00:00.000Z'),
-      data: {},
-    },
-    {
-      bgColor: 'orange',
-      date: new Date('2019-02-01T06:00:00.000Z'),
-      data: {},
-    },
-    {
-      bgColor: 'purple',
-      date: new Date('2021-10-29T00:49:49.911Z'),
-      data: {},
-    },
-  ]}
-  onClick={(item) => {}}
-/>
+export function() {
+  const [range, setRange] = useState<PickerDateRange>({});
+  const onChange = (v: PickerDateRange) => {
+    setRange(v);
+  };
+  return <DateRangePickerField dateRange={range} onChange={onChange} />
+}
 ```
 
 ## Demo
 
-[Demo](https://codesandbox.io/s/ka-charts-bp1jg)
+[Demo](https://codesandbox.io/s/ka-date-range-ztvlio)
 
 ## Contributing
 

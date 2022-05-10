@@ -1,9 +1,14 @@
-export const parameters = {
-  actions: { argTypesRegex: "^on[A-Z].*" },
-  controls: {
-    matchers: {
-      color: /(background|color)$/i,
-      date: /Date$/,
-    },
-  },
-}
+import React from 'react';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { defaultTheme } from '../src/theme/defaultTheme';
+
+export const decorators = [
+  Story => (
+    <React.StrictMode>
+      <ThemeProvider theme={defaultTheme}>
+        <CssBaseline />
+        <Story />
+      </ThemeProvider>
+    </React.StrictMode>
+  ),
+];

@@ -28,6 +28,7 @@ const X = {
         postcss({
             extensions: ['.css']
         })
-    ]
+    ],
+    external: [/node_modules/],    
 };
 export default X;
