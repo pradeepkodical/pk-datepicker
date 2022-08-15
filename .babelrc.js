@@ -9,17 +9,8 @@ const plugins = [
     'core',
   ],
   [
-    'babel-plugin-import',
-    {
-      libraryName: '@mui/icons-material',
-      libraryDirectory: '',
-      camel2DashComponentName: false,
-    },
-    'icons',
-  ],
-  [
     'babel-plugin-direct-import',
-    { modules: ['@mui/material', '@mui/icons-material'] },
+    { modules: ['@mui/material'] },
   ],
 ];
 

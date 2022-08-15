@@ -20,7 +20,7 @@ import {
 import { Menu } from '../components/Menu';
 import { defaultRanges } from './defaults';
 import { parseOptionalDate } from './utils';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 
 const getValidatedMonths = (
   range: PickerDateRange,
@@ -51,7 +51,17 @@ export interface DateRangePickerProps {
   onSelected?: (dateRange: PickerDateRange) => void;
 }
 
-export function StaticDateRangePicker(props: DateRangePickerProps) {
+export const arEqualDateRangePickerProps = (
+  a: DateRangePickerProps,
+  b: DateRangePickerProps
+) =>
+  a.dateRange?.startDate === b.dateRange?.startDate &&
+  a.dateRange?.endDate === b.dateRange?.endDate &&
+  a.definedRanges?.length === b.definedRanges?.length &&
+  a.minDate === b.minDate &&
+  a.maxDate === b.maxDate;
+
+export const StaticDateRangePicker = memo((props: DateRangePickerProps) => {
   const today = new Date();
 
   const {
@@ -87,7 +97,7 @@ export function StaticDateRangePicker(props: DateRangePickerProps) {
 
   useEffect(() => {
     if (onSelected) onSelected(intDateRange);
-  }, [intDateRange]);
+  }, [intDateRange, onSelected]);
 
   // handlers
   const setFirstMonthValidated = (date: Date) => {
@@ -128,7 +138,7 @@ export function StaticDateRangePicker(props: DateRangePickerProps) {
   };
 
   const onMonthNavigate = (marker: string, action: NavigationAction) => {
-    if (marker == MARKERS.FIRST_MONTH) {
+    if (marker === MARKERS.FIRST_MONTH) {
       const firstNew = addMonths(firstMonth, action);
       if (isBefore(firstNew, secondMonth)) setFirstMonth(firstNew);
     } else {
@@ -183,4 +193,4 @@ export function StaticDateRangePicker(props: DateRangePickerProps) {
       handlers={handlers}
     />
   );
-}
+}, arEqualDateRangePickerProps);

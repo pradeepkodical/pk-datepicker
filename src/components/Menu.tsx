@@ -1,10 +1,9 @@
+import { memo } from 'react';
 import { format as formatDate, differenceInCalendarMonths } from 'date-fns';
 
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
-
-import ArrowRightAlt from '@mui/icons-material/ArrowRightAlt';
 
 import { Month } from './Month';
 import { DefinedRanges } from './DefinedRanges';
@@ -15,6 +14,7 @@ import {
   NavigationAction,
   MARKERS,
 } from './types';
+import { ArrowRightIcon } from './icons';
 
 interface MenuProps {
   format: string;
@@ -37,7 +37,7 @@ interface MenuProps {
   };
 }
 
-export function Menu(props: MenuProps) {
+export const Menu = memo((props: MenuProps) => {
   const {
     format,
     ranges,
@@ -60,19 +60,19 @@ export function Menu(props: MenuProps) {
   return (
     <Box sx={{ p: 1 }}>
       <Box display='flex' justifyContent={'center'} alignItems={'center'}>
-        <Box>
+        <div>
           <Typography variant='subtitle1'>
             {startDate ? formatDate(startDate, format) : 'Start Date'}
           </Typography>
-        </Box>
+        </div>
         <Box pl={1} pr={1} display={'flex'}>
-          <ArrowRightAlt color='action' />
+          <ArrowRightIcon color='action' />
         </Box>
-        <Box>
+        <div>
           <Typography variant='subtitle1'>
             {endDate ? formatDate(endDate, format) : 'End Date'}
           </Typography>
-        </Box>
+        </div>
       </Box>
       <Divider sx={{ mt: 1, mb: 1 }} />
       <Box
@@ -115,4 +115,4 @@ export function Menu(props: MenuProps) {
       </Box>
     </Box>
   );
-}
+});

@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { alpha, styled } from '@mui/material';
+import { styled } from '@mui/material';
 
 interface DayProps {
   filled?: boolean;

@@ -19,9 +19,9 @@ npm i ka-daterange
 ```tsx
 export function() {
   const [range, setRange] = useState<PickerDateRange>({});
-  const onChange = (v: PickerDateRange) => {
+  const onChange = useCallback((v: PickerDateRange) => {
     setRange(v);
-  };
+  }, []);
   return <StaticDateRangePicker dateRange={range} onChange={onChange}/>
 }
 ```
@@ -29,9 +29,9 @@ export function() {
 ```tsx
 export function() {
   const [range, setRange] = useState<PickerDateRange>({});
-  const onChange = (v: PickerDateRange) => {
+  const onChange = useCallback((v: PickerDateRange) => {
     setRange(v);
-  };
+  }, []);
   return <DateRangePickerField dateRange={range} onChange={onChange} />
 }
 ```

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import {
   getDate,
   isSameMonth,
@@ -43,6 +44,13 @@ interface MonthProps {
   };
 }
 
+const areEqualMonthProps = (a: MonthProps, b: MonthProps) =>
+  a.value === b.value &&
+  a.dateRange?.startDate === b.dateRange?.startDate &&
+  a.dateRange?.endDate === b.dateRange?.endDate &&
+  a.minDate === b.minDate &&
+  a.maxDate === b.maxDate;
+
 const StyledBox = styled(Box)(({ theme }) => ({
   width: 290,
   '& .weekDaysContainer': {
@@ -76,7 +84,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   },
 }));
 
-export function Month(props: MonthProps) {
+export const Month = memo((props: MonthProps) => {
   const {
     helpers,
     handlers,
@@ -92,7 +100,7 @@ export function Month(props: MonthProps) {
 
   return (
     <StyledBox className={`month-${marker}`}>
-      <Box>
+      <div>
         <Header
           dateRange={dateRange}
           minDate={minDate}
@@ -110,17 +118,17 @@ export function Month(props: MonthProps) {
           }
         />
 
-        <Box className={'weekDaysContainer'}>
+        <div className={'weekDaysContainer'}>
           {WEEK_DAYS.map((day) => (
             <Typography color='textSecondary' key={day} variant='caption'>
               {day}
             </Typography>
           ))}
-        </Box>
+        </div>
 
-        <Box className={'daysContainer'}>
+        <div className={'daysContainer'}>
           {chunks(getDaysInMonth(date), 7).map((week, idx) => (
-            <Box className={'daysRow'} key={idx}>
+            <div className={'daysRow'} key={idx}>
               {week.map((day) => {
                 const isStart = isStartOfRange(dateRange, day);
                 const isEnd = isEndOfRange(dateRange, day);
@@ -149,10 +157,10 @@ export function Month(props: MonthProps) {
                   />
                 );
               })}
-            </Box>
+            </div>
           ))}
-        </Box>
-      </Box>
+        </div>
+      </div>
     </StyledBox>
   );
-}
+}, areEqualMonthProps);

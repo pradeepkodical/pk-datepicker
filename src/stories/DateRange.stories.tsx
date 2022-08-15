@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { PickerDateRange, StaticDateRangePicker } from '../components';
 import { addMonths } from 'date-fns';
@@ -39,16 +39,16 @@ const Template1: ComponentStory<typeof StaticDateRangePicker> = (args) => {
   );
 
   const [range, setRange] = useState<PickerDateRange>({});
-  const onChange = (v: PickerDateRange) => {
+  const onChange = useCallback((v: PickerDateRange) => {
     setRange(v);
-  };
+  }, []);
 
-  const onSelected = (v: PickerDateRange) => {
+  const onSelected = useCallback((v: PickerDateRange) => {
     if (v.startDate) {
       setMinDate(addMonths(v.startDate, -1));
       setMaxDate(addMonths(v.startDate, 2));
     }
-  };
+  }, []);
 
   return (
     <StaticDateRangePicker
